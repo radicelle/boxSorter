@@ -1,16 +1,34 @@
 fun main() {
-    val chaine = "163841689525773"
-    val longchaine = "1638416869846446345364863484364845643543243684864979878468345132486549525773"
+    val shortString = "163841689525773"
+    val longString = "1638416869846446345364863484364845643543243684864979878468345132486549525773"
+    val veryLongString = (1..100000).map { kotlin.random.Random.nextInt(1, 9) }.joinToString("")
 
-    val resultEasy: String = chaine.simpleAlgo()
-    val resultAdvanced: String = chaine.complexAlgo()
+    val resultEasy: String = shortString.simpleAlgo()
+    val resultSwapping: String = shortString.swapping()
     println("Classic algo : $resultEasy -> performance = ${resultEasy.performance()}")
-    println("Advanced algo : $resultAdvanced -> performance = ${resultAdvanced.performance()}")
+    println("Advanced algo : $resultSwapping -> performance = ${resultSwapping.performance()}")
+    println("Advanced algo : $resultSwapping -> performance = ${resultSwapping.performance()}")
 
-    val result2Easy: String = longchaine.simpleAlgo()
-    val result2Advanced: String = longchaine.complexAlgo()
+    val result2Easy: String = longString.simpleAlgo()
+    val result2Swapping: String = longString.swapping()
     println("Classic algo : $result2Easy -> performance = ${result2Easy.performance()}")
-    println("Advanced algo : $result2Advanced -> performance = ${result2Advanced.performance()}")
+    println("Advanced algo : $result2Swapping -> performance = ${result2Swapping.performance()}")
+
+    val result3Easy: String = veryLongString.simpleAlgo()
+    val result3Swapping: String = veryLongString.swapping()
+    print("${result3Easy.numberItems()} vs ${result3Swapping.numberItems()} ")
+    val perfEasy : Double = result3Easy.performance().toDouble()
+    val perfComplex : Double = result3Swapping.performance().toDouble()
+    println("performance easy = $perfEasy")
+    println("performance complex = $perfComplex")
+    println("Gain = ${(perfEasy/perfComplex*100)-100}")
+}
+
+/**
+ * "163/55/336 -> 16355336.length"
+ */
+private fun String.numberItems(): Int {
+    return this.split("/").joinToString("").length
 }
 
 
@@ -19,10 +37,11 @@ fun main() {
  * descending. Then repeating the core algorithm from 10, max size to 1 min size
  * It uses the simple algorithm at each iteration to group the remaining values
  */
-private fun String.complexAlgo(): String {
+private fun String.swapping(): String {
     val finalList = mutableListOf<String>()
-    val functionScopeList = complexAlgoCore().split("/").map { string -> string to string.asSequence().sumOf { it.digitToInt() } }
-        .sortedByDescending { it.second }.toMutableList()
+    val functionScopeList =
+        complexAlgoCore().split("/").map { string -> string to string.asSequence().sumOf { it.digitToInt() } }
+            .sortedByDescending { it.second }.toMutableList()
     for (boxValue in 10 downTo 1) {
         val indicesToRemove = mutableListOf<Int>()
         var index = 0
@@ -41,12 +60,13 @@ private fun String.complexAlgo(): String {
             }
             removalIndex++
         }
-        if(remainingItemsList.isEmpty()) break
+        if (remainingItemsList.isEmpty()) break
         functionScopeList.clear()
         functionScopeList.addAll(
             remainingItemsList.joinToString("") { it.first }.simpleAlgo().split("/")
-            .map { string -> string to string.asSequence().sumOf { it.digitToInt() } }
-            .sortedByDescending { it.second }.toList())
+                .map { string -> string to string.asSequence().sumOf { it.digitToInt() } }
+                .sortedByDescending { it.second }.toList()
+        )
     }
     finalList.addAll(functionScopeList.map { it.first })
     return finalList.joinToString("/")
