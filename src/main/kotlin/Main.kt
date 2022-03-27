@@ -16,7 +16,7 @@ fun main() {
 
     val result3Easy: String = veryLongString.simpleAlgo()
     val result3Swapping: String = veryLongString.swapping()
-    print("${result3Easy.numberItems()} vs ${result3Swapping.numberItems()} ")
+
     val perfEasy : Double = result3Easy.performance().toDouble()
     val perfComplex : Double = result3Swapping.performance().toDouble()
     println("performance easy = $perfEasy")
